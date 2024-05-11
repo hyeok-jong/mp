@@ -18,7 +18,7 @@ def worker(func_arg_tuple):
     return func(*args)
 
 def run_functions(functions, args):
-    with multiprocessing.Pool(processes=len(functions)) as pool:
+    with multiprocessing.Pool(processes=num_cores) as pool:
         results = list(tqdm(pool.imap(worker, zip(functions, args)), total=len(functions)))
     return results
 
