@@ -1,28 +1,32 @@
+```
 import multiprocessing
 import os
 from tqdm import tqdm
 
-def worker(func, kwargs):
-    return func(**kwargs)
+def worker(func, kwargs, name):
+    result = func(**kwargs)
+    return name, result
 
-def run_functions(functions, kwargs_list, num_cores):
-    # Ensure that each function in the list is paired with its corresponding kwargs.
-    tasks = zip(functions, kwargs_list)
+def run_functions(tasks, num_cores):
     with multiprocessing.Pool(processes=num_cores) as pool:
-        results = list(tqdm(pool.starmap(worker, tasks), total=len(functions)))
-    return results
+        results = list(tqdm(pool.starmap(worker, tasks), total=len(tasks)))
+    results_dict = {name: result for name, result in results}
+    return results_dict
 
-# Define functions
-functions = [continuous_conditional_logistic]*2
+functions = [continuous_conditional_logistic]*3
 
-# Define keyword arguments for each function call
 kwargs_list = [
-    {'source_data': source_data, 'variable': 'PM25', 'lag' : 0, 'y_name' : 'CVD_true'},
-    {'source_data': source_data, 'variable': 'PM25', 'lag' : 0, 'y_name' : 'CVD_true'},
-
+    {'source_data': source_data, 'variable': 'PM25', 'lag': 0, 'y_name': 'CVD_true', 'return_prediction': False},
+    {'source_data': source_data, 'variable': 'PM25', 'lag': 0, 'y_name': 'CVD_true', 'return_prediction': False},
+    {'source_data': source_data, 'variable': 'PM25', 'lag': 0, 'y_name': 'CVD_true', 'return_prediction': False},
 ]
 
-# Specify the number of cores to use (e.g., 2 cores)
-num_cores = 2
-results = run_functions(functions, kwargs_list, num_cores)
+names = ['Task 1', 'Task 2', 'Task 3']  
 
+tasks = list(zip(functions, kwargs_list, names))
+
+num_cores = 3
+results = run_functions(tasks, num_cores)
+
+print(results)
+```
