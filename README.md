@@ -1,21 +1,9 @@
-# mp
-
-
-```
 import multiprocessing
 import os
 from tqdm import tqdm
 
-
-def f1(x):
-    return 1
-
-def f2(x):
-    return 2
-
-def worker(func_arg_tuple):
-    func, args = func_arg_tuple
-    return func(*args)
+def worker(func, kwargs):
+    return func(**kwargs)
 
 def run_functions(functions, kwargs_list, num_cores):
     # Ensure that each function in the list is paired with its corresponding kwargs.
@@ -25,17 +13,16 @@ def run_functions(functions, kwargs_list, num_cores):
     return results
 
 # Define functions
-functions = [f1, f2]
+functions = [continuous_conditional_logistic]*2
 
 # Define keyword arguments for each function call
 kwargs_list = [
-    {'x': 10, 'name': 'f1'},
-    {'x': 20, 'name': 'f2'}
+    {'source_data': source_data, 'variable': 'PM25', 'lag' : 0, 'y_name' : 'CVD_true'},
+    {'source_data': source_data, 'variable': 'PM25', 'lag' : 0, 'y_name' : 'CVD_true'},
+
 ]
 
 # Specify the number of cores to use (e.g., 2 cores)
 num_cores = 2
 results = run_functions(functions, kwargs_list, num_cores)
 
-
-```
